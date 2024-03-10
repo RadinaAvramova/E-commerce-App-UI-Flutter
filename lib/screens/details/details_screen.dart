@@ -1,88 +1,123 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:shop_app/constants.dart';
-import 'package:shop_app/models/Product.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shop_app/screens/cart/cart_screen.dart';
 
-import 'components/add_to_cart.dart';
-import 'components/color_and_size.dart';
-import 'components/counter_with_fav_btn.dart';
-import 'components/description.dart';
-import 'components/product_title_with_image.dart';
+import '../../models/Product.dart';
+import 'components/color_dots.dart';
+import 'components/product_description.dart';
+import 'components/product_images.dart';
+import 'components/top_rounded_container.dart';
 
 class DetailsScreen extends StatelessWidget {
-  const DetailsScreen({super.key, required this.product});
+  static String routeName = "/details";
 
-  final Product product;
+  const DetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
+    final ProductDetailsArguments agrs =
+        ModalRoute.of(context)!.settings.arguments as ProductDetailsArguments;
+    final product = agrs.product;
     return Scaffold(
-      // each product have a color
-      backgroundColor: product.color,
+      extendBody: true,
+      extendBodyBehindAppBar: true,
+      backgroundColor: const Color(0xFFF5F6F9),
       appBar: AppBar(
-        backgroundColor: product.color,
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: SvgPicture.asset(
-            'assets/icons/back.svg',
-            colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              shape: const CircleBorder(),
+              padding: EdgeInsets.zero,
+              elevation: 0,
+              backgroundColor: Colors.white,
+            ),
+            child: const Icon(
+              Icons.arrow_back_ios_new,
+              color: Colors.black,
+              size: 20,
+            ),
           ),
-          onPressed: () => Navigator.pop(context),
         ),
-        actions: <Widget>[
-          IconButton(
-            icon: SvgPicture.asset("assets/icons/search.svg"),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: SvgPicture.asset("assets/icons/cart.svg"),
-            onPressed: () {},
-          ),
-          SizedBox(width: kDefaultPaddin / 2)
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              height: size.height,
-              child: Stack(
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(top: size.height * 0.3),
-                    padding: EdgeInsets.only(
-                      top: size.height * 0.12,
-                      left: kDefaultPaddin,
-                      right: kDefaultPaddin,
-                    ),
-                    // height: 500,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(24),
-                        topRight: Radius.circular(24),
+        actions: [
+          Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(right: 20),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Row(
+                  children: [
+                    const Text(
+                      "4.7",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    child: Column(
-                      children: <Widget>[
-                        ColorAndSize(product: product),
-                        SizedBox(height: kDefaultPaddin / 2),
-                        Description(product: product),
-                        SizedBox(height: kDefaultPaddin / 2),
-                        CounterWithFavBtn(),
-                        SizedBox(height: kDefaultPaddin / 2),
-                        AddToCart(product: product)
-                      ],
-                    ),
-                  ),
-                  ProductTitleWithImage(product: product)
-                ],
+                    const SizedBox(width: 4),
+                    SvgPicture.asset("assets/icons/Star Icon.svg"),
+                  ],
+                ),
               ),
-            )
-          ],
+            ],
+          ),
+        ],
+      ),
+      body: ListView(
+        children: [
+          ProductImages(product: product),
+          TopRoundedContainer(
+            color: Colors.white,
+            child: Column(
+              children: [
+                ProductDescription(
+                  product: product,
+                  pressOnSeeMore: () {},
+                ),
+                TopRoundedContainer(
+                  color: const Color(0xFFF6F7F9),
+                  child: Column(
+                    children: [
+                      ColorDots(product: product),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: TopRoundedContainer(
+        color: Colors.white,
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, CartScreen.routeName);
+              },
+              child: const Text("Add To Cart"),
+            ),
+          ),
         ),
       ),
     );
   }
+}
+
+class ProductDetailsArguments {
+  final Product product;
+
+  ProductDetailsArguments({required this.product});
 }

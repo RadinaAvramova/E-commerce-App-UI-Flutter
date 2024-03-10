@@ -1,81 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:shop_app/constants.dart';
 
-import '../../models/Product.dart';
-import '../details/details_screen.dart';
-import 'components/categorries.dart';
-import 'components/item_card.dart';
+import 'components/categories.dart';
+import 'components/discount_banner.dart';
+import 'components/home_header.dart';
+import 'components/popular_product.dart';
+import 'components/special_offers.dart';
 
 class HomeScreen extends StatelessWidget {
+  static String routeName = "/home";
+
+  const HomeScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: SvgPicture.asset("assets/icons/back.svg"),
-          onPressed: () {},
+    return const Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(vertical: 16),
+          child: Column(
+            children: [
+              HomeHeader(),
+              DiscountBanner(),
+              Categories(),
+              SpecialOffers(),
+              SizedBox(height: 20),
+              PopularProducts(),
+              SizedBox(height: 20),
+            ],
+          ),
         ),
-        actions: <Widget>[
-          IconButton(
-            icon: SvgPicture.asset(
-              "assets/icons/search.svg",
-              colorFilter: ColorFilter.mode(kTextColor, BlendMode.srcIn),
-            ),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: SvgPicture.asset(
-              "assets/icons/cart.svg",
-              colorFilter: ColorFilter.mode(kTextColor, BlendMode.srcIn),
-            ),
-            onPressed: () {},
-          ),
-          SizedBox(width: kDefaultPaddin / 2)
-        ],
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPaddin),
-            child: Text(
-              "Women",
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(fontWeight: FontWeight.bold),
-            ),
-          ),
-          Categories(),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPaddin),
-              child: GridView.builder(
-                itemCount: products.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: kDefaultPaddin,
-                  crossAxisSpacing: kDefaultPaddin,
-                  childAspectRatio: 0.75,
-                ),
-                itemBuilder: (context, index) => ItemCard(
-                  product: products[index],
-                  press: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DetailsScreen(
-                        product: products[index],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
